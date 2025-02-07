@@ -1,6 +1,7 @@
 import { autor } from "../models/autores.js";
 import livro from "../models/livros.js";
 
+
 class LivroController {
     static async listarLivros(req, res) {
 
@@ -17,7 +18,7 @@ class LivroController {
             const autorLivro = await autor.findById(req.body.autor)
             const novoLivro = {
                 ...req.body,
-                autor:{...autorLivro._doc}
+                autor: { ...autorLivro._doc }
             }
             const response = await livro.create(novoLivro)
             res.status(201).json({ msg: "Criado com sucesso", livro: response })
@@ -41,7 +42,8 @@ class LivroController {
         try {
             const id = req.params.id
             await livro.findByIdAndUpdate(id, req.body);
-            res.status(200).json({ msg: `Livro editado com sucesso` })
+            const livroEncontrado = await livro.findById(id)
+            res.status(200).json({ msg: `Livro editado com sucesso`, livro: livroEncontrado })
         } catch (error) {
             res.status(500).json({ msg: `${error.message} - falha ao editar livro` })
         }
@@ -52,7 +54,7 @@ class LivroController {
         try {
             const id = req.params.id
             await livro.findByIdAndDelete(id, req.body);
-            res.status(200).json({ msg: "Livro deletado!"})
+            res.status(200).json({ msg: "Livro deletado!" })
         } catch (error) {
             res.status(500).json({ msg: `${error.message} - falha ao deletar livro` })
         }
